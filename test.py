@@ -1,3 +1,3 @@
-a=0x80
-b=0x10
-print(hex(a*256+b))
+k=[1,2,3]
+print(k.pop())
+print(k)
