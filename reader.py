@@ -3,7 +3,15 @@ objfile = "vuln"
 global filecontent
 global bit_flag
 global bit_order
-
+def ret_hex_content(base,offset):
+    table=[]
+    address=0
+    for idx in range(base, base+offset):
+        table.append(filecontent[idx])
+    table = table[::bit_order]
+    for power in range(offset):
+        address = address+table.pop()*2**(power*8)
+    return address
 
 with open(objfile, mode='rb') as file:
     filecontent = file.read()
@@ -29,22 +37,19 @@ elif EI_Data == [2]:
     print("Big Endianness")
     bit_order = 1
 base = 24
-def ret_hex_address(base):
-    table=[]
-    address=0
-    for idx in range(base, base+4*bit_flag):
-        table.append(filecontent[idx])
-    table = table[::bit_order]
-    for power in range(4*bit_flag):
-        address = address+table.pop()*2**(power*8)
-    return address
-h_entry_point=ret_hex_address(base)
-print(hex(h_entry_point))
+e_entry=ret_hex_content(base,4*bit_flag)
+print(hex(e_entry))
 base += 4*bit_flag
-h_program_header=ret_hex_address(base)
-print(hex(h_program_header))
+e_phoff=ret_hex_content(base,4*bit_flag)
+print(hex(e_phoff))
 base += 4*bit_flag
-h_section_header=ret_hex_address(base)
-print(hex(h_section_header))
+e_shoff=ret_hex_content(base,4*bit_flag)
+print(hex(e_shoff))
 base += 4*bit_flag
-
+e_flags=ret_hex_content(base,4)
+print(hex(e_flags))
+base+=4
+e_ehize=ret_hex_content(base,2)
+base+=2
+e_phentsize=ret_hex_content(base,2)
+base+=2
