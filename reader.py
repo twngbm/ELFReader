@@ -38,18 +38,56 @@ elif EI_Data == [2]:
     bit_order = 1
 base = 24
 e_entry=ret_hex_content(base,4*bit_flag)
-print(hex(e_entry))
+print(e_entry)
 base += 4*bit_flag
 e_phoff=ret_hex_content(base,4*bit_flag)
-print(hex(e_phoff))
+print(e_phoff)
 base += 4*bit_flag
 e_shoff=ret_hex_content(base,4*bit_flag)
-print(hex(e_shoff))
+print(e_shoff)
 base += 4*bit_flag
 e_flags=ret_hex_content(base,4)
-print(hex(e_flags))
+#print(hex(e_flags))
 base+=4
 e_ehize=ret_hex_content(base,2)
 base+=2
 e_phentsize=ret_hex_content(base,2)
 base+=2
+e_phnum=ret_hex_content(base,2)
+base+=2
+e_shentsize=ret_hex_content(base,2)
+base+=2
+e_shnum=ret_hex_content(base,2)
+base+=2
+e_shstrndx=ret_hex_content(base,2)
+base+=2
+
+
+base=e_phoff
+
+p_type=ret_hex_content(base,4)
+base+=4
+print(base)
+print(format(p_type,'#08x'))
+if bit_flag==2:
+    p_flags=ret_hex_content(base,4)
+    base+=4
+p_offset=ret_hex_content(base,4*bit_flag)
+base+=4*bit_flag
+print(base)
+print(hex(p_offset))
+p_vaddr=ret_hex_content(base,4*bit_flag)
+base+=4*bit_flag
+print(hex(p_vaddr))
+p_paddr=ret_hex_content(base,4*bit_flag)
+base+=4*bit_flag
+p_filezs=ret_hex_content(base,4*bit_flag)
+base+=4*bit_flag
+p_memsz=ret_hex_content(base,4*bit_flag)
+base+=4*bit_flag
+if bit_flag==1:
+    p_flags=ret_hex_content(base,4)
+    base+=4
+p_align=ret_hex_content(base,4)
+
+    
