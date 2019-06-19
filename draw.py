@@ -1,6 +1,6 @@
 import turtle
-import elfparser
-total_size = len(elfparser.filecontent)
+import reader
+total_size = len(reader.filecontent)
 turtle.colormode(255)
 s_wide = 1600
 lm = -s_wide/2
@@ -11,37 +11,37 @@ per = total_size/s_wide
 section_dict = {}
 # section_dict=[offset/per:[name,start_offset/per-rm,end_pos/per-rm,color]]
 section_dict["File Header"] = ["File Header", 0x0 /
-                               per-rm, (0x0/per+elfparser.e_ehsize/per)-rm, (0, 0, 0)]
-base = elfparser.e_phoff
+                               per-rm, (0x0/per+reader.e_ehsize/per)-rm, (0, 0, 0)]
+base = reader.e_phoff
 x = 30
-color_d = int(200/elfparser.e_phnum)
-for ph in elfparser.pandas_phdata:
+color_d = int(200/reader.e_phnum)
+for ph in reader.pandas_phdata:
     color = (x, x, 235)
     section_dict[base] = [ph[1], base/per-rm,
-                          (base/per+elfparser.e_phentsize/per)-rm, color]
-    base += elfparser.e_phentsize
+                          (base/per+reader.e_phentsize/per)-rm, color]
+    base += reader.e_phentsize
     x += color_d
-base = elfparser.e_shoff
+base = reader.e_shoff
 
 x = 30
-color_d = int(200/elfparser.e_shnum)
-y = 255-int(elfparser.e_shnum)*2
+color_d = int(200/reader.e_shnum)
+y = 255-int(reader.e_shnum)*2
 curf_dict = {}
-for sh in elfparser.shdata:
+for sh in reader.shdata:
 
     section_dict[base] = [sh[1], base/per-rm,
-                          (base/per+elfparser.e_shentsize/per)-rm, (y, x, x)]
-    curf_dict[hex(sh[1])] = [(sh[0]/per+elfparser.e_shentsize/(2*per))-rm, (sh[4]/per +
-                                                                         sh[5]/(2*per))-rm, (sh[0]/per+elfparser.e_shentsize/(2*per))-(sh[4]/per+sh[5]/(2*per)),(y, x, x)]
-    base += elfparser.e_shentsize
+                          (base/per+reader.e_shentsize/per)-rm, (y, x, x)]
+    curf_dict[hex(sh[1])] = [(sh[0]/per+reader.e_shentsize/(2*per))-rm, (sh[4]/per +
+                                                                         sh[5]/(2*per))-rm, (sh[0]/per+reader.e_shentsize/(2*per))-(sh[4]/per+sh[5]/(2*per)),(y, x, x)]
+    base += reader.e_shentsize
     y += 1
     x += color_d
 x = 30
-color_d = int(200/elfparser.e_shnum)
-y = int(130/elfparser.e_shnum)
+color_d = int(200/reader.e_shnum)
+y = int(130/reader.e_shnum)
 z = 100
 
-for sh in elfparser.shdata:
+for sh in reader.shdata:
     section_dict[sh[4]] = [sh[1], sh[4]/per-rm,
                            (sh[4]/per+sh[5]/per)-rm, (255, z, x)]
     z += y

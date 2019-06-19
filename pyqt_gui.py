@@ -19,26 +19,32 @@ class main_windows(QtWidgets.QWidget):
         self.combobox_ph.clear()
         self.combobox_sh.clear()
         self.text_hex.clear()
-        self.table_ph.clear()
-        self.table_sh.clear()
+        ph_rc = self.table_ph.rowCount()
+        for r in range(ph_rc-1):
+            self.table_ph.removeRow(0)
+        sh_rc = self.table_sh.rowCount()
+        for r in range(sh_rc-1):
+            self.table_sh.removeRow(0)
         self.table_fh.clear()
         self.table_fh.setVerticalHeaderLabels(table.fileheader_name_list)
         self.table_fh.setHorizontalHeaderLabels(['Purpos', 'Value', 'Value2'])
         for i in range(17):
             t = QtWidgets.QTableWidgetItem(table.pupros_list[i])
-            t.setFlags( QtCore.Qt.ItemIsSelectable |  QtCore.Qt.ItemIsEnabled )
+            t.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
             self.table_fh.setItem(i, 0, t)
         self.table_ph.setHorizontalHeaderLabels(table.programheader_name_list)
         self.table_ph.setVerticalHeaderLabels(["0"])
         self.table_sh.setHorizontalHeaderLabels(table.sectionheader_name_list)
         self.table_sh.setVerticalHeaderLabels(["0"])
 
-    def do_set_hextext(self,textcontent, focus_base=0, fosuc_size=0):
+    def do_set_hextext(self, textcontent, focus_base=0, focus_size=0):
         line = ""
         asc = ""
         text = ""
         counter = 0
         for byte in textcontent:
+            if counter >=focus_base and counter<=focus_base+focus_size:
+                pass
             if counter % 16 == 0 and counter != 0:
                 text += format(counter-16, "08x")+"  "+line+" "+asc+"\n"
                 asc = ""
@@ -57,9 +63,10 @@ class main_windows(QtWidgets.QWidget):
     def do_update_shtable(self):
         for r_idx in elfparser.section_header:
             for c_idx in range(11):
-                item=QtWidgets.QTableWidgetItem(
+                item = QtWidgets.QTableWidgetItem(
                     str(elfparser.section_header[r_idx].sh_dict[c_idx]))
-                item.setFlags(QtCore.Qt.ItemIsSelectable |  QtCore.Qt.ItemIsEnabled )
+                item.setFlags(QtCore.Qt.ItemIsSelectable |
+                              QtCore.Qt.ItemIsEnabled)
                 self.table_sh.setItem(r_idx, c_idx, item)
                 row = self.table_sh.rowCount()
             self.table_sh.insertRow(row)
@@ -67,9 +74,10 @@ class main_windows(QtWidgets.QWidget):
     def do_update_phtable(self):
         for r_idx in elfparser.program_header:
             for c_idx in range(9):
-                item=QtWidgets.QTableWidgetItem(
+                item = QtWidgets.QTableWidgetItem(
                     str(elfparser.program_header[r_idx].ph_dict[c_idx]))
-                item.setFlags(QtCore.Qt.ItemIsSelectable |  QtCore.Qt.ItemIsEnabled )
+                item.setFlags(QtCore.Qt.ItemIsSelectable |
+                              QtCore.Qt.ItemIsEnabled)
                 self.table_ph.setItem(r_idx, c_idx, item)
                 row = self.table_ph.rowCount()
             self.table_ph.insertRow(row)
@@ -84,7 +92,7 @@ class main_windows(QtWidgets.QWidget):
         except:
             self.ln_status.setText("File unable to open.")
             return -1
-            
+
     def do_update_phmenu(self):
         self.ph_list = ["()"]
         for key in elfparser.program_header:
@@ -103,39 +111,42 @@ class main_windows(QtWidgets.QWidget):
         for idx in range(17):
             t = QtWidgets.QTableWidgetItem(
                 hex(elfparser.file_header.fh_dict[idx]))
-            t.setFlags(QtCore.Qt.ItemIsSelectable |  QtCore.Qt.ItemIsEnabled )
+            t.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
             self.table_fh.setItem(idx, 1, t)
             if idx == 1:
                 if elfparser.bit_flag == 1:
                     t = QtWidgets.QTableWidgetItem("32 Bit")
-                    
+
                 elif elfparser.bit_flag == 2:
                     t = QtWidgets.QTableWidgetItem("64 Bit")
-                    
+
                 else:
                     t = QtWidgets.QTableWidgetItem("Unknow")
-                    
+
             elif idx == 2:
                 if elfparser.bit_order == 1:
                     t = QtWidgets.QTableWidgetItem("Big Endianness")
-                    
+
                 elif elfparser.bit_order == -1:
                     t = QtWidgets.QTableWidgetItem("Little Endianness")
-                    
+
                 else:
                     t = QtWidgets.QTableWidgetItem("Unknow")
-                    
+
             elif idx == 4:
-                t=QtWidgets.QTableWidgetItem(
+                t = QtWidgets.QTableWidgetItem(
                     table.EI_OSABI_TABLE[elfparser.file_header.EI_Osabi])
             elif idx == 5:
-                t=QtWidgets.QTableWidgetItem(
+                t = QtWidgets.QTableWidgetItem(
                     table.e_type_table[elfparser.file_header.e_type])
             elif idx == 6:
-                t=QtWidgets.QTableWidgetItem(
+                t = QtWidgets.QTableWidgetItem(
                     table.e_machine_table[elfparser.file_header.e_machine])
-            t.setFlags(QtCore.Qt.ItemIsSelectable |  QtCore.Qt.ItemIsEnabled )
-            self.table_fh.setItem(idx, 2, t)
+            if idx == 1 or idx == 2 or idx == 4 or idx == 5 or idx == 6:
+                t.setFlags(QtCore.Qt.ItemIsSelectable |
+                           QtCore.Qt.ItemIsEnabled)
+                self.table_fh.setItem(idx, 2, t)
+
     def do_error_handling(self):
         try:
             self.error_type = elfparser.elf_file_processer(self.elf_file)
@@ -151,7 +162,7 @@ class main_windows(QtWidgets.QWidget):
 
     def openfile(self):
 
-        if self.do_open_file()==-1:
+        if self.do_open_file() == -1:
             return
         self.do_clear()
         self.do_set_hextext(self.elf_file)
@@ -179,16 +190,18 @@ class main_windows(QtWidgets.QWidget):
 
     def run(self):
         if 'linux' not in sys.platform:
-            self.ln_status.setText("Currently only support Linux system. sys.platform return:"+str(sys.platform))
+            self.ln_status.setText(
+                "Currently only support Linux system. sys.platform return:"+str(sys.platform))
             return
 
         os.system('cd / && "."'+self.doc[0]+' > /tmp/tmp.log')
-        with open("/tmp/tmp.log",'r') as file:
-            self.run_dump=file.read()
+        with open("/tmp/tmp.log", 'r') as file:
+            self.run_dump = file.read()
             self.text_hex.clear()
             self.text_hex.append(self.run_dump)
-        self.ln_status.setText('command : cd / && "."'+self.doc[0]+' > /tmp/tmp.log')
-        
+        self.ln_status.setText('command : cd / && "."' +
+                               self.doc[0]+' > /tmp/tmp.log')
+
         os.system('rm /tmp/tmp.log')
 
     def exit_(self):
@@ -227,15 +240,19 @@ class main_windows(QtWidgets.QWidget):
             "Currently no file opened, open one to proceed.")
         self.lb_bcounter = QtWidgets.QLabel()
         self.lb_sh_title = QtWidgets.QLabel("Section Header Name:")
+        self.lb_sht_title = QtWidgets.QLabel("Section Header Table")
         self.lb_ph_title = QtWidgets.QLabel("Program Header Name:")
+        self.lb_pht_title = QtWidgets.QLabel("Program Header Table")
         self.ud_linking = QtWidgets.QLabel("Linking Image")
         self.ud_loading = QtWidgets.QLabel("Loading Image")
 
+        info_layout.addWidget(self.lb_pht_title)
         info_layout.addWidget(self.table_ph)
         combobox_ph_layout.addWidget(self.lb_ph_title)
         combobox_ph_layout.addWidget(self.combobox_ph)
         combobox_sh_layout.addWidget(self.lb_sh_title)
         combobox_sh_layout.addWidget(self.combobox_sh)
+        destex_layout.addWidget(self.lb_sht_title)
         destex_layout.addWidget(self.table_sh)
         destex_layout.addLayout(combobox_sh_layout)
         info_layout.addLayout(combobox_ph_layout)
@@ -268,7 +285,8 @@ class main_windows(QtWidgets.QWidget):
         self.ln_status.setReadOnly(True)
 
         self.text_hex.setFont(f)
-
+        self.lb_pht_title.setFont(f)
+        self.lb_sht_title.setFont(f)
         self.ln_status.setFont(f)
         self.but_analysis.setFont(f)
         self.but_edit.setFont(f)
