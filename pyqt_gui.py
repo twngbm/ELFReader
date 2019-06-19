@@ -2,6 +2,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 import sys
 import elfparser
 import table
+import os
 
 
 class main_windows(QtWidgets.QWidget):
@@ -12,6 +13,7 @@ class main_windows(QtWidgets.QWidget):
         self.but_open.clicked.connect(self.openfile)
         self.but_analysis.clicked.connect(self.analysis)
         self.but_exit.clicked.connect(self.exit_)
+        self.but_run.clicked.connect(self.run)
 
     def do_clear(self):
         self.combobox_ph.clear()
@@ -31,12 +33,12 @@ class main_windows(QtWidgets.QWidget):
         self.table_sh.setHorizontalHeaderLabels(table.sectionheader_name_list)
         self.table_sh.setVerticalHeaderLabels(["0"])
 
-    def do_set_hextext(self, focus_base=0, fosuc_size=0):
+    def do_set_hextext(self,textcontent, focus_base=0, fosuc_size=0):
         line = ""
         asc = ""
         text = ""
         counter = 0
-        for byte in self.elf_file:
+        for byte in textcontent:
             if counter % 16 == 0 and counter != 0:
                 text += format(counter-16, "08x")+"  "+line+" "+asc+"\n"
                 asc = ""
@@ -152,7 +154,7 @@ class main_windows(QtWidgets.QWidget):
         if self.do_open_file()==-1:
             return
         self.do_clear()
-        self.do_set_hextext()
+        self.do_set_hextext(self.elf_file)
         text = "From file "+str(self.doc[0])+", read " + \
             str(len(self.elf_file))+" Bytes"
         self.ln_status.setText(text)
@@ -174,6 +176,20 @@ class main_windows(QtWidgets.QWidget):
         self.but_analysis.setEnabled(False)
         self.but_run.setEnabled(True)
         self.but_edit.setEnabled(True)
+
+    def run(self):
+        if 'linux' not in sys.platform:
+            self.ln_status.setText("Currently only support Linux system. sys.platform return:"+str(sys.platform))
+            return
+
+        os.system('cd / && "."'+self.doc[0]+' > /tmp/tmp.log')
+        with open("/tmp/tmp.log",'r') as file:
+            self.run_dump=file.read()
+            self.text_hex.clear()
+            self.text_hex.append(self.run_dump)
+        self.ln_status.setText('command : cd / && "."'+self.doc[0]+' > /tmp/tmp.log')
+        
+        os.system('rm /tmp/tmp.log')
 
     def exit_(self):
         exit()
