@@ -1,5 +1,5 @@
 EI_OSABI_TABLE = {
-    0x00:   "System V , usually means this ELF file doesn't use any OS specific extension",
+    0x00:   "System V , OS independentes",
     0x01:	"HP-UX",
     0x02:	"NetBSD",
     0x03:	"Linux",
@@ -107,6 +107,23 @@ sh_flags_table = {
     0xf0000000:	"MASKPROC",
     0x4000000:	"ORDERED",
     0x8000000:	"EXCLUDE"
-    
-
 }
+name_list = ["EI_Magic", "EI_Class", "EI_Data", "EI_Version", "EI_Osabi", "e-type", "e_machine", "e_entry",
+             "e_phoff", "e_shoff", "e_flags", "e_ehsize", "e_phentsize", "e_phnum", "e_shentsize", "e_shnum", "e_shstrndx"]
+pupros_list = ["Magic Number",
+               "1 for 32 bit,2 for 64 bit",
+               "1 for little endianness, 2 for big",
+               "Set to 1 for the original and current version of ELF",
+               "Identifies the target operating system ABI",
+               "Identifies object file type.",
+               "Specifies target instruction set architecture.",
+               "memory address of the entry point from where the process starts executing.",
+               "Points to the start of the program header table.",
+               "Points to the start of the section header table.",
+               "Interpretation of this field depends on the target architecture.",
+               "Size of this header",
+               "Size of a program header table entry.",
+               "Number of entries in the program header table.",
+               "Size of a section header table entry.",
+               "Number of entries in the section header table.",
+               "Index of the section header table entry that contains the section names."]

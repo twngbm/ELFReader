@@ -1,9 +1,5 @@
-import turtle as tp
+from PyQt5 import QtCore, QtGui
 
-tp.pu()
-tp.seth(90)
-tp.setpos(100,0)
-tp.pd()
-tp.circle(50,180)
-tp.done()
-print(sin()
+app=QtGui.QGuiApplication()
+
+widget=QtGui.QLabel("hello world")

@@ -2,14 +2,10 @@ import sys
 from table import *
 import pandas as pd
 import time
-objfile = "test.bin"
-objfile = "vuln"
+objfile = "elf_file/s_64_a.out"
 global filecontent
 global bit_flag
 global bit_order
-pd.option_context('display.max_rows', None, 'display.max_columns', None)
-with open(objfile, mode='rb') as file:
-    filecontent = file.read()
 
 
 def ret_hex_value(base, offset):
@@ -23,11 +19,16 @@ def ret_hex_value(base, offset):
     return address
 
 
-def ret_hex_content(base, offset, filecontent=filecontent):
+def ret_hex_content(base, offset, filecontent):
     hex_list = []
     for idx in range(offset):
         hex_list.append(filecontent[base+idx])
     return hex_list
+
+
+pd.option_context('display.max_rows', None, 'display.max_columns', None)
+with open(objfile, mode='rb') as file:
+    filecontent = file.read()
 
 
 EI_Magic = [filecontent[0], filecontent[1],
@@ -129,7 +130,7 @@ while pcount < e_phnum:
     base += 4*bit_flag
     pcount += 1
 phdf = pd.DataFrame(pandas_phdata, columns=["TableAddr", "Type", "Offset", "VirtAddr",
-                                     "PhysAddr", "FileSiz(Bytes)", "MemSiz(Bytes)", "Flag", "Align"])
+                                            "PhysAddr", "FileSiz(Bytes)", "MemSiz(Bytes)", "Flag", "Align"])
 print(phdf)
 scount = 0
 base = e_shoff
@@ -227,7 +228,7 @@ while True:
     print("Section Size:\t", data[5])
     print("Section Content:")
     print(" Offset(h)  00 01 02 03 04 05 06 07  08 09 0A 0B 0C 0D 0E 0F\n")
-    cont = ret_hex_content(data[4], data[5])
+    cont = ret_hex_content(data[4], data[5],filecontent)
     c = 0
     for word in cont:
         if c % 16 == 0:
@@ -239,4 +240,3 @@ while True:
             print("")
         c += 1
     print("\n")
-
