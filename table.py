@@ -108,8 +108,12 @@ sh_flags_table = {
     0x4000000:	"ORDERED",
     0x8000000:	"EXCLUDE"
 }
-name_list = ["EI_Magic", "EI_Class", "EI_Data", "EI_Version", "EI_Osabi", "e-type", "e_machine", "e_entry",
-             "e_phoff", "e_shoff", "e_flags", "e_ehsize", "e_phentsize", "e_phnum", "e_shentsize", "e_shnum", "e_shstrndx"]
+fileheader_name_list = ["EI_Magic", "EI_Class", "EI_Data", 
+                        "EI_Version", "EI_Osabi", "e-type", 
+                        "e_machine", "e_entry", "e_phoff", 
+                        "e_shoff", "e_flags", "e_ehsize", 
+                        "e_phentsize", "e_phnum", "e_shentsize", 
+                        "e_shnum", "e_shstrndx"]
 pupros_list = ["Magic Number",
                "1 for 32 bit,2 for 64 bit",
                "1 for little endianness, 2 for big",
@@ -127,3 +131,5 @@ pupros_list = ["Magic Number",
                "Size of a section header table entry.",
                "Number of entries in the section header table.",
                "Index of the section header table entry that contains the section names."]
+programheader_name_list=["Reference","Type","Offset","Vaddr","Paddr","FileSize","MemSize","Flags","Align"]
+sectionheader_name_list=["Reference","Name","Type","Offset","Addr","Size","EntSize","Flags","Link","Info","Addralign"]

@@ -8,6 +8,13 @@
             "name": "Python: Current File",
             "type": "python",
             "request": "launch",
+            "program": "D:\\Documents\\RTES_Lab\\Personal\\course\\RTS2\\final_project\\main.py",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal"
         }

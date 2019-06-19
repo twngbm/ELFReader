@@ -1,5 +1,15 @@
-from PyQt5 import QtCore, QtGui
+class a():
+    def bbb(self):
+        B=0
+    def ccc(self):
+        self.C=1
+    def __init__(self):
+        self.bbb()
+        self.ccc()
+        self.ddd()
+    def ddd(self):
+        self.D=self.C
 
-app=QtGui.QGuiApplication()
-
-widget=QtGui.QLabel("hello world")
+    
+k=a()
+print(k.D)

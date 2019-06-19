@@ -35,11 +35,13 @@ def elf_file_processer(filecontent):
         ph = Elf_program_header(filecontent, base)
         program_header[pcount] = ph
         try:
-            program_header[pcount].p_type=p_type_table[program_header[pcount].p_type]
+            program_header[pcount].p_type = p_type_table[program_header[pcount].p_type]
         except:
             pass
+        ph.create_dict()
         base += file_header.e_phentsize
         pcount += 1
+
     scount = 0
     section_header = {}
     section = {}
@@ -82,13 +84,15 @@ def elf_file_processer(filecontent):
             section_header[sh_key].sh_flags = sh_flags_table[section_header[sh_key].sh_flags]
         except:
             pass
+        section_header[sh_key].create_dict()
+    return 0
 
 
 class Elf_file_header():
     def __init__(self, elf_file):
         global bit_order
         global bit_flag
-        bit_order=1
+        bit_order = 1
         self.EI_Magic = ret_dec_value(0, 4, elf_file)
         self.EI_Class = ret_dec_value(4, 1, elf_file)
         bit_flag = 1 if self.EI_Class == 1 else 2
@@ -118,13 +122,12 @@ class Elf_file_header():
         self.e_shnum = ret_dec_value(base, 2, elf_file)
         base += 2
         self.e_shstrndx = ret_dec_value(base, 2, elf_file)
-        self.d_list = [self.EI_Magic, self.EI_Class,
-                       self.EI_Data, self.EI_Version,
-                       self.EI_Osabi, self.e_type, self.e_machine, 
-                       self.e_entry, self.e_phoff, self.e_shoff, 
-                       self.e_flags, self.e_ehsize, self.e_phentsize, 
-                       self.e_phnum,self.e_shentsize,self.e_shnum,self.e_shstrndx]
-
+        self.fh_dict = [self.EI_Magic, self.EI_Class,
+                        self.EI_Data, self.EI_Version,
+                        self.EI_Osabi, self.e_type, self.e_machine,
+                        self.e_entry, self.e_phoff, self.e_shoff,
+                        self.e_flags, self.e_ehsize, self.e_phentsize,
+                        self.e_phnum, self.e_shentsize, self.e_shnum, self.e_shstrndx]
 
 
 class Elf_program_header():
@@ -149,7 +152,13 @@ class Elf_program_header():
             self.p_flags = ret_dec_value(base, 4, elf_file)
             base += 4
         self.p_align = ret_dec_value(base, 4*bit_flag, elf_file)
-        
+
+    def create_dict(self):
+        self.ph_dict = {0: format(self.init_base, '#010x'), 1: self.p_type,
+                        2: format(self.p_offset, '#010x'), 3: format(self.p_vaddr, '#010x'),
+                        4: format(self.p_paddr, '#010x'), 5: self.p_filesz,
+                        6: self.p_memsz, 7: self.p_flags,
+                        8: self.p_align}
 
 
 class Elf_section_header():
@@ -174,6 +183,14 @@ class Elf_section_header():
         self.sh_addralign = ret_dec_value(base, 4*bit_flag, elf_file)
         base += 4*bit_flag
         self.sh_entize = ret_dec_value(base, 4*bit_flag, elf_file)
+
+    def create_dict(self):
+        self.sh_dict = {0: format(self.init_base, '#010x'), 1: self.sh_name,
+                        2: self.sh_type, 3: format(self.sh_offset, '#010x'),
+                        4: format(self.sh_addr, '#010x'), 5: self.sh_size,
+                        6: self.sh_entize, 7: self.sh_flags,
+                        8: self.sh_link, 9: self.sh_info,
+                        10: self.sh_addralign}
 
 
 class Elf_section():
