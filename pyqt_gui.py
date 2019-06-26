@@ -287,12 +287,15 @@ class main_windows(QtWidgets.QWidget):
                 "Currently only support Linux system. sys.platform return:"+str(sys.platform))
             return
         else:
-            return
+            pass
+        os.system('sudo chmod +x '+self.doc[0])
         os.system('cd / && "."'+self.doc[0]+' > /tmp/tmp.log')
+        
         with open("/tmp/tmp.log", 'r') as file:
             run_dump = file.read()
-            self.table_hex.clear()
-            self.table_hex.append(run_dump)
+            self.do_pop_up(run_dump)
+        file.close()
+            
         self.ln_status.setText('command : cd / && "."' +
                                self.doc[0]+' > /tmp/tmp.log')
 
@@ -496,56 +499,6 @@ class main_windows(QtWidgets.QWidget):
         self.table_sh.setSelectionMode(QtWidgets.QTableView.SingleSelection)
         self.table_ph.setSelectionMode(QtWidgets.QTableView.SingleSelection)
         self.do_clear()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
