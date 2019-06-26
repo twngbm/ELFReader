@@ -89,5 +89,5 @@ for key in curf_dict:
     turtle.circle(-n_radius*flip, 120)
     turtle.pu()
     flip *= -1
-
 turtle.done()
+

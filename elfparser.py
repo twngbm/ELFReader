@@ -102,56 +102,77 @@ class Elf_file_header():
         self.EI_Osabi = ret_dec_value(7, 1, elf_file)
         self.e_type = ret_dec_value(16, 2, elf_file)
         self.e_machine = ret_dec_value(18, 2, elf_file)
+        self.fh_basesize_dict=[[0,4],[4,1],[5,1],[6,1],[7,1],[16,2],[18,2]]
         base = 24
         self.e_entry = ret_dec_value(base, 4*bit_flag, elf_file)
+        self.fh_basesize_dict.append([base,4*bit_flag])
         base += 4*bit_flag
         self.e_phoff = ret_dec_value(base, 4*bit_flag, elf_file)
+        self.fh_basesize_dict.append([base,4*bit_flag])
         base += 4*bit_flag
         self.e_shoff = ret_dec_value(base, 4*bit_flag, elf_file)
+        self.fh_basesize_dict.append([base,4*bit_flag])
         base += 4*bit_flag
         self.e_flags = ret_dec_value(base, 4, elf_file)
+        self.fh_basesize_dict.append([base,4])
         base += 4
         self.e_ehsize = ret_dec_value(base, 2, elf_file)
+        self.fh_basesize_dict.append([base,2])
         base += 2
         self.e_phentsize = ret_dec_value(base, 2, elf_file)
+        self.fh_basesize_dict.append([base,2])
         base += 2
         self.e_phnum = ret_dec_value(base, 2, elf_file)
+        self.fh_basesize_dict.append([base,2])
         base += 2
         self.e_shentsize = ret_dec_value(base, 2, elf_file)
+        self.fh_basesize_dict.append([base,2])
         base += 2
         self.e_shnum = ret_dec_value(base, 2, elf_file)
+        self.fh_basesize_dict.append([base,2])
         base += 2
         self.e_shstrndx = ret_dec_value(base, 2, elf_file)
+        self.fh_basesize_dict.append([base,2])
         self.fh_dict = [self.EI_Magic, self.EI_Class,
                         self.EI_Data, self.EI_Version,
                         self.EI_Osabi, self.e_type, self.e_machine,
                         self.e_entry, self.e_phoff, self.e_shoff,
                         self.e_flags, self.e_ehsize, self.e_phentsize,
                         self.e_phnum, self.e_shentsize, self.e_shnum, self.e_shstrndx]
-
+        
 
 class Elf_program_header():
     def __init__(self, elf_file, base):
+        self.ph_basesize_dict=[]
         self.init_base = base
         self.p_type = ret_dec_value(base, 4, elf_file)
+        self.ph_basesize_dict.append([base,4])
         base += 4
         if bit_flag == 2:
             self.p_flags = ret_dec_value(base, 4, elf_file)
+            self.ph_basesize_dict.append([base,4])
             base += 4
         self.p_offset = ret_dec_value(base, 4*bit_flag, elf_file)
+        self.ph_basesize_dict.append([base,4*bit_flag])
         base += 4*bit_flag
         self.p_vaddr = ret_dec_value(base, 4*bit_flag, elf_file)
+        self.ph_basesize_dict.append([base,4*bit_flag])
         base += 4*bit_flag
         self.p_paddr = ret_dec_value(base, 4*bit_flag, elf_file)
+        self.ph_basesize_dict.append([base,4*bit_flag])
         base += 4*bit_flag
         self.p_filesz = ret_dec_value(base, 4*bit_flag, elf_file)
+        self.ph_basesize_dict.append([base,4*bit_flag])
         base += 4*bit_flag
         self.p_memsz = ret_dec_value(base, 4*bit_flag, elf_file)
+        self.ph_basesize_dict.append([base,4*bit_flag])
         base += 4*bit_flag
         if bit_flag == 1:
             self.p_flags = ret_dec_value(base, 4, elf_file)
+            self.ph_basesize_dict.insert(1,[base,4])
             base += 4
         self.p_align = ret_dec_value(base, 4*bit_flag, elf_file)
+        self.ph_basesize_dict.append([base,4*bit_flag])
 
     def create_dict(self):
         self.ph_dict = {0: format(self.init_base, '#010x'), 1: self.p_type,
@@ -163,26 +184,37 @@ class Elf_program_header():
 
 class Elf_section_header():
     def __init__(self, elf_file, base):
+        self.sh_basesize_dict=[]
         self.init_base = base
         self.sh_name = ret_dec_value(base, 4, elf_file)
+        self.sh_basesize_dict.append([base,4])
         base += 4
         self.sh_type = ret_dec_value(base, 4, elf_file)
+        self.sh_basesize_dict.append([base,4])
         base += 4
         self.sh_flags = ret_dec_value(base, 4*bit_flag, elf_file)
+        self.sh_basesize_dict.append([base,4*bit_flag])
         base += 4*bit_flag
         self.sh_addr = ret_dec_value(base, 4*bit_flag, elf_file)
+        self.sh_basesize_dict.append([base,4*bit_flag])
         base += 4*bit_flag
         self.sh_offset = ret_dec_value(base, 4*bit_flag, elf_file)
+        self.sh_basesize_dict.append([base,4*bit_flag])
         base += 4*bit_flag
         self.sh_size = ret_dec_value(base, 4*bit_flag, elf_file)
+        self.sh_basesize_dict.append([base,4*bit_flag])
         base += 4*bit_flag
         self.sh_link = ret_dec_value(base, 4, elf_file)
+        self.sh_basesize_dict.append([base,4])
         base += 4
         self.sh_info = ret_dec_value(base, 4, elf_file)
+        self.sh_basesize_dict.append([base,4])
         base += 4
         self.sh_addralign = ret_dec_value(base, 4*bit_flag, elf_file)
+        self.sh_basesize_dict.append([base,4*bit_flag])
         base += 4*bit_flag
         self.sh_entize = ret_dec_value(base, 4*bit_flag, elf_file)
+        self.sh_basesize_dict.append([base,4*bit_flag])
 
     def create_dict(self):
         self.sh_dict = {0: format(self.init_base, '#010x'), 1: self.sh_name,
