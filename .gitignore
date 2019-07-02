@@ -1,0 +1,6 @@
+.vscode/*
+.vs/*
+__pycache__/*
+draw.py
+reader.py
+test.py
