@@ -1,6 +1,13 @@
+<<<<<<< HEAD
 .vscode/*
 .vs/*
 __pycache__/*
 draw.py
 reader.py
 test.py
+=======
+__pycache__/elfparser.cpython-37.pyc
+__pycache__/pyqt_gui.cpython-37.pyc
+__pycache__/table.cpython-37.pyc\
+__pycache__/*
+>>>>>>> a3c597617eef5169e6bfc6c382a419c96b51e085
